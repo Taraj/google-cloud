@@ -1,7 +1,9 @@
 const express = require('express');
 const {Datastore} = require('@google-cloud/datastore');
+const {SecretManagerServiceClient} = require('@google-cloud/secret-manager')
 
 const datastore = new Datastore();
+const secretManagerServiceClient = new SecretManagerServiceClient();
 const app = express();
 
 const MAX_PAGE_SIZE = 10;
@@ -65,6 +67,21 @@ app.get('/tasks/:id', (req, res) => {
             });
         }
     })
+});
+
+app.get('/secret', (req, res) => {
+    secretManagerServiceClient.accessSecretVersion({
+        name: `projects/743709002958/secrets/ACCESS_TOKEN_SECRET/versions/latest`
+    }).catch(err => {
+        res.status(500).send(err.message);
+    }).then(([value]) => {
+        const secretValue = value.payload.data.toString();
+        res.status(200).json(secretValue);
+    })
+});
+
+app.get('/env', (req, res) => {
+    res.status(200).json(process.env.MY_TEST_ENV);
 });
 
 exports.app = app;
