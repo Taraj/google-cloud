@@ -1,0 +1,8 @@
+{
+  "name": "sample-http",
+  "version": "0.0.1",
+  "dependencies": {
+     "express": "4.17.1",
+     "@google-cloud/datastore": "6.4.7"
+  }
+}
